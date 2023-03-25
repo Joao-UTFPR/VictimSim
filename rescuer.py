@@ -43,16 +43,16 @@ class Rescuer(AbstractAgent):
 
         # This is a off-line trajectory plan, each element of the list is
         # a pair dx, dy that do the agent walk in the x-axis and/or y-axis
-        self.plan.append((0,1))
-        self.plan.append((1,1))
-        self.plan.append((1,0))
-        self.plan.append((1,-1))
-        self.plan.append((0,-1))
-        self.plan.append((-1,0))
-        self.plan.append((-1,-1))
-        self.plan.append((-1,-1))
-        self.plan.append((-1,1))
-        self.plan.append((1,1))
+        self.plan.append((0, 1))
+        self.plan.append((1, 1))
+        self.plan.append((1, 0))
+        self.plan.append((1, -1))
+        self.plan.append((0, -1))
+        self.plan.append((-1, 0))
+        self.plan.append((-1, -1))
+        self.plan.append((-1, -1))
+        self.plan.append((-1, 1))
+        self.plan.append((1, 1))
         
     def deliberate(self) -> bool:
         """ This is the choice of the next action. The simulator calls this
