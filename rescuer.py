@@ -63,7 +63,7 @@ class Rescuer(AbstractAgent):
 
         # No more actions to do
         if self.plan == []:  # empty list, no more actions to do
-           return False
+            return False
 
         # Takes the first action of the plan (walk action) and removes it from the plan
         dx, dy = self.plan.pop(0)
@@ -76,7 +76,7 @@ class Rescuer(AbstractAgent):
             # check if there is a victim at the current position
             seq = self.body.check_for_victim()
             if seq >= 0:
-                res = self.body.first_aid(seq) # True when rescued             
+                res = self.body.first_aid(seq)  # True when rescued
 
         return True
 
