@@ -26,6 +26,7 @@ class Explorer(AbstractAgent):
         self.rtime = self.TLIM  # remaining time to explore
         self.current_position = (0, 0)
         self.visited_positions = [(0, 0)]
+        self.victim_positions = []
         self.walled_positions = []
         self.path_to_base = []
 
@@ -36,8 +37,6 @@ class Explorer(AbstractAgent):
         self.dfs_a = None
 
         self.flag_returning = 0
-
-        # self.possible_moves = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)]
 
     def deliberate(self) -> bool:
         """ The agent chooses the next action. The simulator calls this
@@ -62,7 +61,9 @@ class Explorer(AbstractAgent):
             else:
                 # dx, dy = (0, 0)
                 print(f"{self.NAME} I believe I've remaining time of {self.rtime:.1f}")
-                self.resc.go_save_victims([], [])
+                # print(self.victim_positions)
+                # exit()
+                self.resc.go_save_victims(self.walled_positions, self.victim_positions)
                 return False
             next_position = (self.current_position[0] + dx, self.current_position[1] + dy)
 
@@ -72,7 +73,6 @@ class Explorer(AbstractAgent):
         if result != PhysAgent.BUMPED:
             self.current_position = next_position
             self.visited_positions.append(self.current_position)
-        # print(self.visited_positions)
 
         # Update remaining time
         if dx != 0 and dy != 0:
@@ -92,10 +92,11 @@ class Explorer(AbstractAgent):
             seq = self.body.check_for_victim()
             if seq >= 0:
                 vs = self.body.read_vital_signals(seq)
+                if self.current_position not in [i[0] for i in self.victim_positions]:
+                    self.victim_positions.append((self.current_position, vs[7]))
                 self.rtime -= self.COST_READ
                 # print("exp: read vital signals of " + str(seq))
                 # print(vs)
-
         return True
 
     # def get_next_pos_rand(self):

@@ -6,6 +6,7 @@ import os
 import random
 from abstract_agent import AbstractAgent
 from physical_agent import PhysAgent
+from genetic import Genetic
 from abc import ABC, abstractmethod
 
 
@@ -26,33 +27,49 @@ class Rescuer(AbstractAgent):
         # It changes to ACTIVE when the map arrives
         self.body.set_state(PhysAgent.IDLE)
 
+
         # planning
-        self.__planner()
+
     
     def go_save_victims(self, walls, victims):
         """ The explorer sends the map containing the walls and
         victims' location. The rescuer becomes ACTIVE. From now,
         the deliberate method is called by the environment"""
+        genetic = Genetic(10, victims, walls, self.TLIM)
+
+        sol, map = genetic._run()
+
+        print(sol[2].tolist()[0])
+        # exit()
+        # print(genetic.genesis())
+        self.__planner(sol[2].tolist()[0], map)
+
         self.body.set_state(PhysAgent.ACTIVE)
         
     
-    def __planner(self):
+    def __planner(self, solution, map):
         """ A private method that calculates the walk actions to rescue the
         victims. Further actions may be necessary and should be added in the
         deliberata method"""
 
         # This is a off-line trajectory plan, each element of the list is
         # a pair dx, dy that do the agent walk in the x-axis and/or y-axis
-        self.plan.append((0, 1))
-        self.plan.append((1, 1))
-        self.plan.append((1, 0))
-        self.plan.append((1, -1))
-        self.plan.append((0, -1))
-        self.plan.append((-1, 0))
-        self.plan.append((-1, -1))
-        self.plan.append((-1, -1))
-        self.plan.append((-1, 1))
-        self.plan.append((1, 1))
+        print(map)
+        for i in range(len(solution)-1):
+            for move in map[solution[i]][solution[i+1]]["trajectory"]:
+                self.plan.append(move)
+        # exit()
+
+        # self.plan.append((0, 1))
+        # self.plan.append((1, 1))
+        # self.plan.append((1, 0))
+        # self.plan.append((1, -1))
+        # self.plan.append((0, -1))
+        # self.plan.append((-1, 0))
+        # self.plan.append((-1, -1))
+        # self.plan.append((-1, -1))
+        # self.plan.append((-1, 1))
+        # self.plan.append((1, 1))
         
     def deliberate(self) -> bool:
         """ This is the choice of the next action. The simulator calls this
