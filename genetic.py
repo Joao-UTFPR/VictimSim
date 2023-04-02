@@ -21,7 +21,7 @@ class Genetic:
         # print("1")
         self.generate_victims_dict_distances()
 
-        self.fitness_list = self.get_all_fitnes()
+        # self.fitness_list = self.get_all_fitnes()
 
         # progenitors = self.progenitor_selection()
 
@@ -177,23 +177,24 @@ class Genetic:
         mutated_pop = []
         for offspring in new_population_set:
             mutated_pop.append(self.mutate_offspring(offspring))
-        return mutated_pop
+        return np.array(mutated_pop)
 
     def _run(self):
-        mutated_pop = self.mutate_population(self.population)
-        best_solution = [-1, np.inf, np.array([])]
+        self.fitness_list = self.get_all_fitnes()
+        # mutated_pop = self.mutate_population(self.population)
+        best_solution = [-1, 0, np.array([])]
         for i in range(1000):
-            if i % 100 == 0: print(i, self.fitness_list.min(), self.fitness_list.mean(), datetime.now().strftime("%d/%m/%y %H:%M"))
-            fitnes_list = self.get_all_fitnes()
+            if i % 100 == 0: print(i, self.fitness_list.max(), self.fitness_list.mean(), datetime.now().strftime("%d/%m/%y %H:%M"))
+            self.fitness_list = self.get_all_fitnes()
 
             # Saving the best solution
-            if fitnes_list.min() < best_solution[1]:
+            if self.fitness_list.max() > best_solution[1]:
                 best_solution[0] = i
-                best_solution[1] = fitnes_list.min()
-                best_solution[2] = np.array(mutated_pop)[fitnes_list.min() == fitnes_list]
+                best_solution[1] = self.fitness_list.max()
+                best_solution[2] = np.array(self.population)[self.fitness_list.max() == self.fitness_list]
 
             progenitor_list = self.progenitor_selection()
             new_population_set = self.mate_population(progenitor_list)
 
-            mutated_pop = self.mutate_population(new_population_set)
+            self.population = self.mutate_population(new_population_set)
         return best_solution, self.victim_dict_distances

@@ -38,6 +38,7 @@ class Rescuer(AbstractAgent):
         genetic = Genetic(10, victims, walls, self.TLIM)
 
         sol, map = genetic._run()
+        print(sol)
 
         print(sol[2].tolist()[0])
         # exit()
